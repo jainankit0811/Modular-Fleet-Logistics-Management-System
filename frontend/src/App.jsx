@@ -3,6 +3,7 @@ import Layout from './components/Layout/Layout';
 import Dashboard from './pages/Dashboard';
 import Drivers from './pages/Drivers';
 import FleetOperations from './pages/FleetOperations';
+import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Logistics from './pages/Logistics';
 import Reports from './pages/Reports';
@@ -14,9 +15,10 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/" element={<Layout />}>
+        <Route path="/app" element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path="vehicles" element={<Vehicles />} />
           <Route path="drivers" element={<Drivers />} />

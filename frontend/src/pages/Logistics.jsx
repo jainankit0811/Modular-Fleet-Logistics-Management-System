@@ -47,7 +47,7 @@ export default function Logistics() {
                     driverName: driver ? driver.name : 'Unknown',
                     origin: 'Warehouse A', // Backend doesn't have origin/dest yet
                     destination: 'Warehouse B',
-                    status: t.status.charAt(0) + t.status.slice(1).toLowerCase(),
+                    status: t.status === 'DISPATCHED' ? 'In Transit' : (t.status.charAt(0) + t.status.slice(1).toLowerCase()),
                     progress: t.status === 'COMPLETED' ? 100 : (t.status === 'DISPATCHED' ? 45 : 0),
                     eta: '2h 15m'
                 };

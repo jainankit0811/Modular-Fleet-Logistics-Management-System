@@ -18,7 +18,7 @@ export default function Login() {
         try {
             const response = await apiClient.post('/auth/login', { email, password });
             localStorage.setItem('token', response.data.token);
-            navigate('/');
+            navigate('/app');
         } catch (err) {
             setError(err.response?.data?.message || 'Login failed. Please try again.');
         } finally {

@@ -23,12 +23,12 @@ function cn(...inputs) {
 }
 
 const navItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-    { icon: Truck, label: 'Vehicles', path: '/vehicles' },
-    { icon: Users, label: 'Drivers', path: '/drivers' },
-    { icon: MapPin, label: 'Logistics', path: '/logistics' },
-    { icon: Activity, label: 'Operations', path: '/operations' },
-    { icon: BarChart3, label: 'Reports', path: '/reports' },
+    { icon: LayoutDashboard, label: 'Dashboard', path: '/app' },
+    { icon: Truck, label: 'Vehicles', path: '/app/vehicles' },
+    { icon: Users, label: 'Drivers', path: '/app/drivers' },
+    { icon: MapPin, label: 'Logistics', path: '/app/logistics' },
+    { icon: Activity, label: 'Operations', path: '/app/operations' },
+    { icon: BarChart3, label: 'Reports', path: '/app/reports' },
 ];
 
 export default function Sidebar() {
@@ -150,7 +150,7 @@ export default function Sidebar() {
                     )}
 
                     <button
-                        onClick={() => navigate('/settings')}
+                        onClick={() => navigate('/app/settings')}
                         className={cn(
                             "w-full flex items-center px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white transition-all",
                             !isOpen && "justify-center"

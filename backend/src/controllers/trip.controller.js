@@ -76,3 +76,8 @@ export const updateTripStatus = asyncHandler(async (req, res) => {
 
   res.status(200).json({ message: `Trip status updated to ${status}`, trip: updatedTrip });
 });
+// Get all trips
+export const getTrips = asyncHandler(async (req, res) => {
+  const trips = await prisma.trip.findMany();
+  res.status(200).json(trips);
+});

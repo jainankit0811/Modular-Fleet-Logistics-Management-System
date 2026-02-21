@@ -71,9 +71,17 @@ export default function DispatchModal({ isOpen, onClose, onSave, vehicles, drive
                                         className="w-full bg-white/5 border border-white/10 rounded-xl py-2 px-4 text-white outline-none focus:border-blue-500/50 transition-all font-bold"
                                     >
                                         <option value="">Choose Available Vehicle...</option>
-                                        {vehicles.filter(v => v.status === 'Available').map(v => (
-                                            <option key={v.id} value={v.id}>{v.licensePlate} ({v.model}) - Max {v.maxCapacity}T</option>
-                                        ))}
+                                        {!vehicles || vehicles.length === 0 ? (
+                                            <option disabled>No vehicles found. Create one first.</option>
+                                        ) : (
+                                            vehicles.filter(v => v.status?.toUpperCase() === 'AVAILABLE').length === 0 ? (
+                                                <option disabled>No vehicles currently Available</option>
+                                            ) : (
+                                                vehicles.filter(v => v.status?.toUpperCase() === 'AVAILABLE').map(v => (
+                                                    <option key={v.id} value={v.id}>{v.licensePlate} ({v.model}) - Max {v.maxCapacity}T</option>
+                                                ))
+                                            )
+                                        )}
                                     </select>
                                 </div>
 
@@ -86,9 +94,17 @@ export default function DispatchModal({ isOpen, onClose, onSave, vehicles, drive
                                         className="w-full bg-white/5 border border-white/10 rounded-xl py-2 px-4 text-white outline-none focus:border-blue-500/50 transition-all font-bold"
                                     >
                                         <option value="">Choose On-Duty Driver...</option>
-                                        {drivers.filter(d => d.status === 'Available').map(d => (
-                                            <option key={d.id} value={d.id}>{d.name} (Safety: {d.rating})</option>
-                                        ))}
+                                        {!drivers || drivers.length === 0 ? (
+                                            <option disabled>No drivers found. Register one first.</option>
+                                        ) : (
+                                            drivers.filter(d => d.status?.toUpperCase() === 'ON_DUTY').length === 0 ? (
+                                                <option disabled>No drivers currently On Duty</option>
+                                            ) : (
+                                                drivers.filter(d => d.status?.toUpperCase() === 'ON_DUTY').map(d => (
+                                                    <option key={d.id} value={d.id}>{d.name} (Safety: {d.safetyScore || d.rating || 'N/A'})</option>
+                                                ))
+                                            )
+                                        )}
                                     </select>
                                 </div>
 
