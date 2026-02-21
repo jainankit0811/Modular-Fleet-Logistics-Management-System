@@ -37,7 +37,9 @@ export default function Drivers() {
                 licenseNumber: d.licenseNumber,
                 licenseExpiry: new Date(d.licenseExpiry).toISOString().split('T')[0],
                 rating: d.safetyScore || 5.0,
-                status: d.status === 'ON_DUTY' ? 'Available' : (d.status === 'OFF_DUTY' ? 'Off Duty' : 'On Leave'), // Map backend to frontend display
+                status: d.status === 'ON_DUTY' ? 'Available' :
+                    (d.status === 'SUSPENDED' ? 'Suspended' :
+                        (d.status === 'OFF_DUTY' ? 'Off Duty' : 'On Leave')),
                 phone: '+91 98765 43210', // Placeholder
                 experience: '5 Yrs' // Placeholder
             }));
@@ -73,14 +75,18 @@ export default function Drivers() {
         return diffDays < 30 && diffDays > 0;
     };
 
+    const [error, setError] = useState(null);
+
     const handleSave = async (driverData) => {
         try {
+            setError(null);
             const payload = {
                 name: driverData.name,
                 licenseNumber: driverData.licenseNumber,
                 licenseExpiry: driverData.licenseExpiry,
                 safetyScore: parseFloat(driverData.rating),
-                status: driverData.status === 'Available' ? 'ON_DUTY' : 'OFF_DUTY'
+                status: driverData.status === 'Available' ? 'ON_DUTY' :
+                    driverData.status === 'Suspended' ? 'SUSPENDED' : 'OFF_DUTY'
             };
 
             if (editingDriver) {
@@ -93,6 +99,7 @@ export default function Drivers() {
             setEditingDriver(null);
         } catch (error) {
             console.error('Failed to save driver:', error);
+            setError(error.response?.data?.message || 'Failed to save driver. Please check your inputs.');
         }
     };
 

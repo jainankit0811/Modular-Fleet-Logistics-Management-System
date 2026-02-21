@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Lock, Mail, Truck } from 'lucide-react';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import apiClient from '../services/apiClient';
 
 export default function Login() {
@@ -96,7 +96,7 @@ export default function Login() {
 
                 <div className="mt-8 pt-8 border-t border-white/5 text-center">
                     <p className="text-slate-500 text-sm">
-                        Don't have an account? <button className="text-blue-400 font-bold hover:underline">Contact Fleet Manager</button>
+                        Don't have an account? <Link to="/signup" className="text-blue-400 font-bold hover:underline">Create One</Link>
                     </p>
                 </div>
             </motion.div>

@@ -61,8 +61,11 @@ export default function Vehicles() {
         }
     };
 
+    const [error, setError] = useState(null);
+
     const handleSave = async (vehicleData) => {
         try {
+            setError(null);
             const payload = {
                 licensePlate: vehicleData.plateNumber,
                 model: vehicleData.name,
@@ -80,6 +83,7 @@ export default function Vehicles() {
             setEditingVehicle(null);
         } catch (error) {
             console.error('Failed to save vehicle:', error);
+            setError(error.response?.data?.message || 'Failed to save vehicle. Please check your inputs.');
         }
     };
 

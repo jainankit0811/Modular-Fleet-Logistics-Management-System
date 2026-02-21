@@ -6,6 +6,7 @@ import FleetOperations from './pages/FleetOperations';
 import Login from './pages/Login';
 import Logistics from './pages/Logistics';
 import Reports from './pages/Reports';
+import Signup from './pages/Signup';
 import Vehicles from './pages/Vehicles';
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path="vehicles" element={<Vehicles />} />

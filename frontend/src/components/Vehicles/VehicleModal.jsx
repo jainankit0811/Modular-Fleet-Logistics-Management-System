@@ -7,7 +7,7 @@ export default function VehicleModal({ isOpen, onClose, onSave, vehicle = null }
         name: '',
         plateNumber: '',
         type: 'Truck',
-        status: 'Active',
+        status: 'Available',
         capacity: '',
         lastService: '',
         mileage: ''
@@ -23,7 +23,7 @@ export default function VehicleModal({ isOpen, onClose, onSave, vehicle = null }
                 name: '',
                 plateNumber: '',
                 type: 'Truck',
-                status: 'Active',
+                status: 'Available',
                 capacity: '',
                 lastService: '',
                 mileage: ''
