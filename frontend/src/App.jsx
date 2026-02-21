@@ -6,6 +6,7 @@ import FleetOperations from './pages/FleetOperations';
 import Login from './pages/Login';
 import Logistics from './pages/Logistics';
 import Reports from './pages/Reports';
+import Settings from './pages/Settings';
 import Signup from './pages/Signup';
 import Vehicles from './pages/Vehicles';
 
@@ -22,6 +23,7 @@ function App() {
           <Route path="logistics" element={<Logistics />} />
           <Route path="operations" element={<FleetOperations />} />
           <Route path="reports" element={<Reports />} />
+          <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>
     </Router>

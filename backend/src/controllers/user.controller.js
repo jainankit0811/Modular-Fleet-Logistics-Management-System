@@ -16,3 +16,17 @@ export const createUser = asyncHandler(async (req, res) => {
   });
   res.status(201).json(user);
 });
+// Get current user info
+export const getCurrentUser = asyncHandler(async (req, res) => {
+  const user = await prisma.user.findUnique({
+    where: { id: req.user.id }
+  });
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  // Omit password
+  const { password, ...userWithoutPassword } = user;
+  res.json(userWithoutPassword);
+});

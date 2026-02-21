@@ -13,9 +13,10 @@ import {
     Users,
     X
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
+import { userService } from '../../services/userService';
 
 function cn(...inputs) {
     return twMerge(clsx(inputs));
@@ -32,7 +33,29 @@ const navItems = [
 
 export default function Sidebar() {
     const [isOpen, setIsOpen] = useState(true);
+    const [user, setUser] = useState(null);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const userData = await userService.getMe();
+                setUser(userData);
+            } catch (error) {
+                console.error('Failed to fetch user:', error);
+                // If unauthorized, redirect to login
+                if (error.response?.status === 401) {
+                    navigate('/login');
+                }
+            }
+        };
+        fetchUser();
+    }, [navigate]);
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        navigate('/login');
+    };
 
     return (
         <>
@@ -104,17 +127,45 @@ export default function Sidebar() {
 
                 {/* Bottom Actions */}
                 <div className="p-4 border-t border-white/5 space-y-2">
-                    <button className={cn(
-                        "w-full flex items-center px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white transition-all",
-                        !isOpen && "justify-center"
-                    )}>
+                    {/* Profile Section */}
+                    {user && (
+                        <div className={cn(
+                            "flex items-center p-3 rounded-2xl bg-white/5 border border-white/5 mb-4 overflow-hidden shadow-xl",
+                            !isOpen && "justify-center px-0"
+                        )}>
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-sm shrink-0 shadow-lg shadow-blue-600/20">
+                                {user.name.charAt(0)}
+                            </div>
+                            {isOpen && (
+                                <motion.div
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    className="ml-3 min-w-0"
+                                >
+                                    <p className="text-sm font-bold text-white truncate">{user.name}</p>
+                                    <p className="text-[10px] font-bold text-blue-400 uppercase tracking-widest">{user.role}</p>
+                                </motion.div>
+                            )}
+                        </div>
+                    )}
+
+                    <button
+                        onClick={() => navigate('/settings')}
+                        className={cn(
+                            "w-full flex items-center px-4 py-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white transition-all",
+                            !isOpen && "justify-center"
+                        )}
+                    >
                         <Settings size={22} />
                         {isOpen && <span className="ml-3 font-medium">Settings</span>}
                     </button>
-                    <button className={cn(
-                        "w-full flex items-center px-4 py-3 rounded-xl text-red-400 hover:bg-red-400/10 transition-all",
-                        !isOpen && "justify-center"
-                    )}>
+                    <button
+                        onClick={handleLogout}
+                        className={cn(
+                            "w-full flex items-center px-4 py-3 rounded-xl text-red-400 hover:bg-red-400/10 transition-all",
+                            !isOpen && "justify-center"
+                        )}
+                    >
                         <LogOut size={22} />
                         {isOpen && <span className="ml-3 font-medium">Logout</span>}
                     </button>

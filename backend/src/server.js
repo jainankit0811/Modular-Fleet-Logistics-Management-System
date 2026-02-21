@@ -9,6 +9,7 @@ import driverRoutes from "./routes/driver.routes.js";
 import fuelRoutes from "./routes/fuel.routes.js";
 import maintenanceRoutes from "./routes/maintenance.routes.js";
 import tripRoutes from "./routes/trip.routes.js";
+import userRoutes from "./routes/user.routes.js";
 import vehicleRoutes from "./routes/vehicle.routes.js";
 
 dotenv.config();
@@ -22,6 +23,7 @@ app.use(express.json());
 // Routes
 app.use("/api/health", (req, res) => res.json({ status: "ok", message: "Backend is reachable" }));
 app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 app.use("/api/vehicles", vehicleRoutes);
 app.use("/api/drivers", driverRoutes);
 app.use("/api/trips", tripRoutes);
