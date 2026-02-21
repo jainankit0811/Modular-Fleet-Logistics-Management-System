@@ -1,6 +1,6 @@
 // User controller
-import prisma from '../config/prisma.js';
-import asyncHandler from '../utils/asyncHandler.js';
+import prisma from "../config/prisma.js";
+import asyncHandler from "../utils/asyncHandler.js";
 
 // Get all users
 export const getUsers = asyncHandler(async (req, res) => {
