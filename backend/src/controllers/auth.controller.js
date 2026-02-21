@@ -1,10 +1,10 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const asyncHandler = require("../utils/asyncHandler");
-const prisma = require("../config/prisma");
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import prisma from "../config/prisma.js";
+import asyncHandler from "../utils/asyncHandler.js";
 
 // Register a new user
-exports.register = asyncHandler(async (req, res) => {
+export const register = asyncHandler(async (req, res) => {
   const { name, email, password, role } = req.body;
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -17,7 +17,7 @@ exports.register = asyncHandler(async (req, res) => {
 });
 
 // Login user
-exports.login = asyncHandler(async (req, res) => {
+export const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   const user = await prisma.user.findUnique({ where: { email } });

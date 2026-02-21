@@ -1,8 +1,8 @@
-const jwt = require("jsonwebtoken");
-const asyncHandler = require("../utils/asyncHandler");
+import jwt from "jsonwebtoken";
+import asyncHandler from "../utils/asyncHandler.js";
 
 // Middleware to verify JWT token
-exports.protect = asyncHandler(async (req, res, next) => {
+export const protect = asyncHandler(async (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) {

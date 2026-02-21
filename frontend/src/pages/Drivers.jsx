@@ -11,23 +11,43 @@ import {
     Trash2,
     User
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DriverModal from '../components/Drivers/DriverModal';
-import { MOCK_DRIVERS } from '../utils/mockData';
+import { driverService } from '../services/driverService';
 
 export default function Drivers() {
-    const [drivers, setDrivers] = useState(MOCK_DRIVERS);
+    const [drivers, setDrivers] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterStatus, setFilterStatus] = useState('All');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingDriver, setEditingDriver] = useState(null);
 
-    const filteredDrivers = drivers.filter(d => {
-        const matchesSearch = d.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            d.licenseNumber.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesStatus = filterStatus === 'All' || d.status === filterStatus;
-        return matchesSearch && matchesStatus;
-    });
+    useEffect(() => {
+        fetchDrivers();
+    }, []);
+
+    const fetchDrivers = async () => {
+        try {
+            setLoading(true);
+            const data = await driverService.getAll();
+            const transformedData = data.map(d => ({
+                id: d.id,
+                name: d.name,
+                licenseNumber: d.licenseNumber,
+                licenseExpiry: new Date(d.licenseExpiry).toISOString().split('T')[0],
+                rating: d.safetyScore || 5.0,
+                status: d.status === 'ON_DUTY' ? 'Available' : (d.status === 'OFF_DUTY' ? 'Off Duty' : 'On Leave'), // Map backend to frontend display
+                phone: '+91 98765 43210', // Placeholder
+                experience: '5 Yrs' // Placeholder
+            }));
+            setDrivers(transformedData);
+        } catch (error) {
+            console.error('Failed to fetch drivers:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const getStatusColor = (status) => {
         switch (status) {
@@ -46,19 +66,37 @@ export default function Drivers() {
         return diffDays < 30 && diffDays > 0;
     };
 
-    const handleSave = (driverData) => {
-        if (editingDriver) {
-            setDrivers(prev => prev.map(d => d.id === editingDriver.id ? { ...driverData, id: d.id } : d));
-        } else {
-            setDrivers(prev => [...prev, { ...driverData, id: Date.now().toString(), rating: 5.0 }]);
+    const handleSave = async (driverData) => {
+        try {
+            const payload = {
+                name: driverData.name,
+                licenseNumber: driverData.licenseNumber,
+                licenseExpiry: driverData.licenseExpiry,
+                safetyScore: parseFloat(driverData.rating),
+                status: driverData.status === 'Available' ? 'ON_DUTY' : 'OFF_DUTY'
+            };
+
+            if (editingDriver) {
+                await driverService.update(editingDriver.id, payload);
+            } else {
+                await driverService.create(payload);
+            }
+            fetchDrivers();
+            setIsModalOpen(false);
+            setEditingDriver(null);
+        } catch (error) {
+            console.error('Failed to save driver:', error);
         }
-        setIsModalOpen(false);
-        setEditingDriver(null);
     };
 
-    const handleDelete = (id) => {
+    const handleDelete = async (id) => {
         if (confirm('Are you sure you want to remove this driver profile?')) {
-            setDrivers(prev => prev.filter(d => d.id !== id));
+            try {
+                await driverService.delete(id);
+                fetchDrivers();
+            } catch (error) {
+                console.error('Failed to delete driver:', error);
+            }
         }
     };
 
@@ -66,6 +104,17 @@ export default function Drivers() {
         setEditingDriver(driver);
         setIsModalOpen(true);
     };
+
+    if (loading) {
+        return (
+            <div className="h-[calc(100vh-140px)] flex items-center justify-center">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="w-12 h-12 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin"></div>
+                    <p className="text-slate-400 font-medium">Loading Driver Profiles...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-6">

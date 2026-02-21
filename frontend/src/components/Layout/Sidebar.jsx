@@ -1,6 +1,7 @@
 import { clsx } from 'clsx';
 import { motion } from 'framer-motion';
 import {
+    Activity,
     BarChart3,
     ChevronRight,
     LayoutDashboard,
@@ -25,6 +26,7 @@ const navItems = [
     { icon: Truck, label: 'Vehicles', path: '/vehicles' },
     { icon: Users, label: 'Drivers', path: '/drivers' },
     { icon: MapPin, label: 'Logistics', path: '/logistics' },
+    { icon: Activity, label: 'Operations', path: '/operations' },
     { icon: BarChart3, label: 'Reports', path: '/reports' },
 ];
 

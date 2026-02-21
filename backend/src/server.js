@@ -1,17 +1,17 @@
 // Server setup
-import express from "express";
 import cors from "cors";
-import pkg from "@prisma/client";
-import userRoutes from "./routes/user.routes.js";
-import errorMiddleware from "./middleware/error.middleware.js";
 import dotenv from "dotenv";
+import express from "express";
+import errorMiddleware from "./middleware/error.middleware.js";
+import analyticsRoutes from "./routes/analytics.routes.js";
+import authRoutes from "./routes/auth.routes.js";
+import driverRoutes from "./routes/driver.routes.js";
+import fuelRoutes from "./routes/fuel.routes.js";
+import maintenanceRoutes from "./routes/maintenance.routes.js";
+import tripRoutes from "./routes/trip.routes.js";
+import vehicleRoutes from "./routes/vehicle.routes.js";
 
 dotenv.config();
-
-const { PrismaClient } = pkg; // ✅ destructure from default
-const prisma = new PrismaClient(); // ✅ create instance
-
-export { prisma }; // optional if routes need it
 
 const app = express();
 
@@ -20,7 +20,14 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use("/api", userRoutes);
+app.use("/api/health", (req, res) => res.json({ status: "ok", message: "Backend is reachable" }));
+app.use("/api/auth", authRoutes);
+app.use("/api/vehicles", vehicleRoutes);
+app.use("/api/drivers", driverRoutes);
+app.use("/api/trips", tripRoutes);
+app.use("/api/analytics", analyticsRoutes);
+app.use("/api/maintenance", maintenanceRoutes);
+app.use("/api/fuel", fuelRoutes);
 
 // Global error handler
 app.use(errorMiddleware);

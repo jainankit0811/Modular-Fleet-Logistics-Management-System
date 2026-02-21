@@ -1,10 +1,10 @@
-const express = require("express");
-const {
+import express from "express";
+import {
   createTrip,
   updateTripStatus,
-} = require("../controllers/trip.controller");
-const { protect } = require("../middleware/auth.middleware");
-const { authorize } = require("../middleware/role.middleware");
+} from "../controllers/trip.controller.js";
+import { protect } from "../middleware/auth.middleware.js";
+import { authorize } from "../middleware/role.middleware.js";
 
 const router = express.Router();
 
@@ -13,4 +13,4 @@ router.use(protect);
 router.post("/", authorize("Dispatcher"), createTrip);
 router.put("/:id/status", authorize("Dispatcher"), updateTripStatus);
 
-module.exports = router;
+export default router;

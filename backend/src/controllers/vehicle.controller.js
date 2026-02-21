@@ -1,14 +1,14 @@
-const asyncHandler = require("../utils/asyncHandler");
-const prisma = require("../config/prisma");
+import prisma from "../config/prisma.js";
+import asyncHandler from "../utils/asyncHandler.js";
 
 // Get all vehicles
-exports.getVehicles = asyncHandler(async (req, res) => {
+export const getVehicles = asyncHandler(async (req, res) => {
   const vehicles = await prisma.vehicle.findMany();
   res.status(200).json(vehicles);
 });
 
 // Create a new vehicle
-exports.createVehicle = asyncHandler(async (req, res) => {
+export const createVehicle = asyncHandler(async (req, res) => {
   const { licensePlate, model, maxCapacity, status } = req.body;
 
   const vehicle = await prisma.vehicle.create({
@@ -19,7 +19,7 @@ exports.createVehicle = asyncHandler(async (req, res) => {
 });
 
 // Update vehicle
-exports.updateVehicle = asyncHandler(async (req, res) => {
+export const updateVehicle = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { licensePlate, model, maxCapacity, status } = req.body;
 
@@ -32,7 +32,7 @@ exports.updateVehicle = asyncHandler(async (req, res) => {
 });
 
 // Delete vehicle
-exports.deleteVehicle = asyncHandler(async (req, res) => {
+export const deleteVehicle = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   await prisma.vehicle.delete({ where: { id: parseInt(id) } });

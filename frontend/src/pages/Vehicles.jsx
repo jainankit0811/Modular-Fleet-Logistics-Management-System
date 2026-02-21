@@ -7,16 +7,43 @@ import {
     Trash2,
     Truck
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import VehicleModal from '../components/Vehicles/VehicleModal';
-import { MOCK_VEHICLES } from '../utils/mockData';
+import { vehicleService } from '../services/vehicleService';
 
 export default function Vehicles() {
-    const [vehicles, setVehicles] = useState(MOCK_VEHICLES);
+    const [vehicles, setVehicles] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterType, setFilterType] = useState('All');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingVehicle, setEditingVehicle] = useState(null);
+
+    useEffect(() => {
+        fetchVehicles();
+    }, []);
+
+    const fetchVehicles = async () => {
+        try {
+            setLoading(true);
+            const data = await vehicleService.getAll();
+            // Transform data to match frontend mock format if necessary
+            const transformedData = data.map(v => ({
+                id: v.id,
+                name: v.model,
+                plateNumber: v.licensePlate,
+                type: 'Truck', // Defaulting for now as model is just string
+                status: v.status.charAt(0) + v.status.slice(1).toLowerCase().replace('_', ' '),
+                capacity: `${v.maxCapacity} Tons`,
+                mileage: '12,450 km' // Mock for now
+            }));
+            setVehicles(transformedData);
+        } catch (error) {
+            console.error('Failed to fetch vehicles:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const filteredVehicles = vehicles.filter(v => {
         const matchesSearch = v.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -27,26 +54,43 @@ export default function Vehicles() {
 
     const getStatusColor = (status) => {
         switch (status) {
-            case 'Active': return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20';
-            case 'In Service': return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
-            case 'Out of Order': return 'bg-rose-500/10 text-rose-500 border-rose-500/20';
+            case 'Available': return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20';
+            case 'On trip': return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
+            case 'In shop': return 'bg-rose-500/10 text-rose-500 border-rose-500/20';
             default: return 'bg-slate-500/10 text-slate-500 border-slate-500/20';
         }
     };
 
-    const handleSave = (vehicleData) => {
-        if (editingVehicle) {
-            setVehicles(prev => prev.map(v => v.id === editingVehicle.id ? { ...vehicleData, id: v.id } : v));
-        } else {
-            setVehicles(prev => [...prev, { ...vehicleData, id: Date.now().toString() }]);
+    const handleSave = async (vehicleData) => {
+        try {
+            const payload = {
+                licensePlate: vehicleData.plateNumber,
+                model: vehicleData.name,
+                maxCapacity: parseFloat(vehicleData.capacity),
+                status: vehicleData.status.toUpperCase().replace(' ', '_')
+            };
+
+            if (editingVehicle) {
+                await vehicleService.update(editingVehicle.id, payload);
+            } else {
+                await vehicleService.create(payload);
+            }
+            fetchVehicles();
+            setIsModalOpen(false);
+            setEditingVehicle(null);
+        } catch (error) {
+            console.error('Failed to save vehicle:', error);
         }
-        setIsModalOpen(false);
-        setEditingVehicle(null);
     };
 
-    const handleDelete = (id) => {
+    const handleDelete = async (id) => {
         if (confirm('Are you sure you want to delete this vehicle?')) {
-            setVehicles(prev => prev.filter(v => v.id !== id));
+            try {
+                await vehicleService.delete(id);
+                fetchVehicles();
+            } catch (error) {
+                console.error('Failed to delete vehicle:', error);
+            }
         }
     };
 
@@ -54,6 +98,17 @@ export default function Vehicles() {
         setEditingVehicle(vehicle);
         setIsModalOpen(true);
     };
+
+    if (loading) {
+        return (
+            <div className="h-[calc(100vh-140px)] flex items-center justify-center">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="w-12 h-12 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin"></div>
+                    <p className="text-slate-400 font-medium">Loading Fleet Data...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-6">

@@ -1,12 +1,12 @@
-const express = require("express");
-const {
-  getVehicles,
+import express from "express";
+import {
   createVehicle,
-  updateVehicle,
   deleteVehicle,
-} = require("../controllers/vehicle.controller");
-const { protect } = require("../middleware/auth.middleware");
-const { authorize } = require("../middleware/role.middleware");
+  getVehicles,
+  updateVehicle,
+} from "../controllers/vehicle.controller.js";
+import { protect } from "../middleware/auth.middleware.js";
+import { authorize } from "../middleware/role.middleware.js";
 
 const router = express.Router();
 
@@ -17,4 +17,4 @@ router.post("/", authorize("Manager"), createVehicle);
 router.put("/:id", authorize("Manager"), updateVehicle);
 router.delete("/:id", authorize("Manager"), deleteVehicle);
 
-module.exports = router;
+export default router;

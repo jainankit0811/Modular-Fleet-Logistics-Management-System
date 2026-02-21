@@ -1,8 +1,17 @@
-import { Outlet } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
 import Header from './Header';
 import Sidebar from './Sidebar';
 
 export default function Layout() {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!localStorage.getItem('token')) {
+            navigate('/login');
+        }
+    }, [navigate]);
+
     return (
         <div className="min-h-screen bg-slate-950 text-slate-200 selection:bg-blue-500/30">
             <Sidebar />

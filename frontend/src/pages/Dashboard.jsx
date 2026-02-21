@@ -1,65 +1,92 @@
 import { motion } from 'framer-motion';
 import {
     Activity,
+    AlertCircle,
     ArrowDownRight,
     ArrowUpRight,
-    Fuel,
-    TrendingUp,
     Truck,
     Users
 } from 'lucide-react';
 
-const stats = [
-    {
-        label: 'Total Fleet',
-        value: '42',
-        trend: '+4.5%',
-        trendUp: true,
-        icon: Truck,
-        color: 'text-blue-500',
-        bg: 'bg-blue-500/10'
-    },
-    {
-        label: 'Active Drivers',
-        value: '38',
-        trend: '+1.2%',
-        trendUp: true,
-        icon: Users,
-        color: 'text-emerald-500',
-        bg: 'bg-emerald-500/10'
-    },
-    {
-        label: 'Fuel Efficiency',
-        value: '8.4 km/l',
-        trend: '-2.3%',
-        trendUp: false,
-        icon: Fuel,
-        color: 'text-amber-500',
-        bg: 'bg-amber-500/10'
-    },
-    {
-        label: 'Current Shipments',
-        value: '12',
-        trend: '+8%',
-        trendUp: true,
-        icon: Activity,
-        color: 'text-indigo-500',
-        bg: 'bg-indigo-500/10'
-    }
-];
+import { useEffect, useState } from 'react';
+import { analyticsService } from '../services/analyticsService';
 
 export default function Dashboard() {
+    const [stats, setStats] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const data = await analyticsService.getDashboardStats();
+                setStats(data);
+            } catch (error) {
+                console.error('Failed to fetch stats:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchStats();
+    }, []);
+
+    const dashboardStats = [
+        {
+            label: 'Active Fleet',
+            value: stats?.activeFleet || '0',
+            trend: stats?.fleetTrend || '+0%',
+            trendUp: true,
+            icon: Truck,
+            color: 'text-blue-500',
+            bg: 'bg-blue-500/10',
+            description: "Vehicles currently on trip"
+        },
+        {
+            label: 'Active Drivers',
+            value: stats?.activeDrivers || '0',
+            trend: stats?.driverTrend || '+0%',
+            trendUp: true,
+            icon: Users,
+            color: 'text-emerald-500',
+            bg: 'bg-emerald-500/10',
+            description: "Drivers currently on duty"
+        },
+        {
+            label: 'Maintenance Alerts',
+            value: stats?.inShop || '0',
+            trend: '-2',
+            trendUp: false,
+            icon: AlertCircle,
+            color: 'text-rose-500',
+            bg: 'bg-rose-500/10',
+            description: "Vehicles marked In Shop"
+        },
+        {
+            label: 'Utilization Rate',
+            value: stats?.utilizationRate || '0%',
+            trend: stats?.shipmentTrend || '+0%',
+            trendUp: true,
+            icon: Activity,
+            color: 'text-indigo-500',
+            bg: 'bg-indigo-500/10',
+            description: "Fleet assigned vs idle"
+        }
+    ];
+
+    if (loading) return (
+        <div className="h-full flex items-center justify-center">
+            <div className="w-10 h-10 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin"></div>
+        </div>
+    );
+
     return (
         <div className="space-y-8">
-            {/* Welcome Header */}
             <header>
                 <h1 className="text-3xl font-bold text-white tracking-tight">Dashboard Overview</h1>
                 <p className="text-slate-500 mt-1">Monitor your fleet performance and logistics in real-time.</p>
             </header>
 
-            {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {stats.map((stat, idx) => (
+                {dashboardStats.map((stat, idx) => (
                     <motion.div
                         key={stat.label}
                         initial={{ opacity: 0, y: 20 }}
@@ -82,26 +109,20 @@ export default function Dashboard() {
                             <h3 className="text-2xl font-bold text-white mt-1 group-hover:scale-105 transition-transform origin-left">
                                 {stat.value}
                             </h3>
+                            <p className="text-[10px] text-slate-600 mt-1 uppercase tracking-tight">{stat.description}</p>
                         </div>
                     </motion.div>
                 ))}
             </div>
 
-            {/* Main Content Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Placeholder for Map/Activity */}
                 <div className="lg:col-span-2 space-y-6">
                     <div className="aspect-[16/9] bg-white/5 border border-white/5 rounded-3xl overflow-hidden relative group">
                         <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/10 to-transparent pointer-events-none"></div>
                         <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
-                            <div className="w-16 h-16 bg-blue-600/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                <TrendingUp size={32} className="text-blue-500" />
-                            </div>
-                            <h3 className="text-xl font-bold text-white">Real-time Fleet Tracking</h3>
-                            <p className="text-slate-500 mt-2 max-w-md">Live GPS integration will be displayed here as the system modules are added.</p>
-                            <button className="mt-6 px-6 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-semibold transition-all">
-                                Configure GPS
-                            </button>
+                            <Truck size={48} className="text-blue-500/20 mb-4" />
+                            <h3 className="text-xl font-bold text-white/40">Fleet Map Visualization</h3>
+                            <p className="text-slate-600 max-w-sm mt-2">Map engine initializing with real-time GPS coordinates...</p>
                         </div>
                     </div>
                 </div>

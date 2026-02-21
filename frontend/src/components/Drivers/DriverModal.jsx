@@ -122,11 +122,12 @@ export default function DriverModal({ isOpen, onClose, onSave, driver = null }) 
                                         <select
                                             value={formData.status}
                                             onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                                            className="w-full bg-white/5 border border-white/10 rounded-xl py-2 px-4 text-white outline-none focus:border-blue-500/50 transition-all"
+                                            className="w-full bg-slate-900 border border-white/10 rounded-xl py-2 px-4 text-white outline-none focus:border-blue-500/50"
                                         >
                                             <option value="Available">Available</option>
-                                            <option value="On Trip">On Trip</option>
+                                            <option value="Off Duty">Off Duty</option>
                                             <option value="On Leave">On Leave</option>
+                                            <option value="Suspended">Suspended</option>
                                         </select>
                                     </div>
                                     <div className="space-y-1.5">

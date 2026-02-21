@@ -125,11 +125,12 @@ export default function VehicleModal({ isOpen, onClose, onSave, vehicle = null }
                                         <select
                                             value={formData.status}
                                             onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                                            className="w-full bg-white/5 border border-white/10 rounded-xl py-2 px-4 text-white outline-none focus:border-blue-500/50 transition-all"
+                                            className="w-full bg-slate-900 border border-white/10 rounded-xl py-2 px-4 text-white outline-none focus:border-blue-500/50"
                                         >
-                                            <option value="Active">Active</option>
-                                            <option value="In Service">In Service</option>
-                                            <option value="Out of Order">Out of Order</option>
+                                            <option value="Available">Available</option>
+                                            <option value="On Trip">On Trip</option>
+                                            <option value="In Shop">In Shop</option>
+                                            <option value="Retired">Retired</option>
                                         </select>
                                     </div>
                                 </div>
