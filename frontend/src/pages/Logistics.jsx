@@ -7,6 +7,7 @@ import {
     Search
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import DispatchModal from '../components/Logistics/DispatchModal';
 import RouteMap from '../components/Logistics/RouteMap';
 import { driverService } from '../services/driverService';
 import { tripService } from '../services/tripService';

@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { MapPin, Navigation, Truck } from 'lucide-react';
 
 export default function RouteMap({ activeRoute = null }) {
@@ -111,4 +111,4 @@ export default function RouteMap({ activeRoute = null }) {
     );
 }
 
-import { AnimatePresence } from 'framer-motion';
+

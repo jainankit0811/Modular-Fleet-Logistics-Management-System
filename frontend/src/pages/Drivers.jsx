@@ -49,6 +49,13 @@ export default function Drivers() {
         }
     };
 
+    const filteredDrivers = drivers.filter(d => {
+        const matchesSearch = d.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            d.licenseNumber.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesStatus = filterStatus === 'All' || d.status === filterStatus;
+        return matchesSearch && matchesStatus;
+    });
+
     const getStatusColor = (status) => {
         switch (status) {
             case 'Available': return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20';
